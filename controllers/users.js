@@ -1,99 +1,117 @@
 const usersRouter = require('express').Router();
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const User = require("../models/user")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 const nodemailer = require("nodemailer");
-const { PAGE_URL } = require('../config');
-const { token } = require('morgan');
+const {PAGE_URL}= require("../config");
+const { request } = require('express');
 
 //ENDPOINT
+
+//para crear un nuevo usuario
 usersRouter.post('/', async (req, res) =>{
-    console.log(req.body);
-    
-    const {name, email, password} = req.body;
-    
-    //VALIDACION A NIVEL DE BACKEND
+  console.log("aqui ")
+  const {name, email, password} = req.body;
+  console.log(req.body);
+  
+  console.log("en el post");
+
+    //validacion a nivel de backend
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'Todos los espacions son requeridos' });
     }
 
+    //Encriptacion de contraseñas, antes de guardar con bcrypt
 
-    //validacion de email existente
-    const userExists = await User.findOne({ email });
-
-    console.log(userExists);
-    
-
-    if(userExists) {
-        return res.status(400).json({ error: 'El correo ya esta registrado' });
-    }
-     
-    //ENCRYPTACION DE LA CONTRASE;A
     const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-    console.log(passwordHash);
+    const passwordHash = await bcrypt.hash(password, saltRounds)
+    const newUser = new User({
+        name,
+        email,
+        passwordHash,
+    })
+    // guardar el usuario en al base de datos con el metodo .save()
+    const savedUser = await newUser.save();
+    // para crear el token
+    const token = jwt.sign({ id: savedUser.id}, process.env.ACCESS_TOKEN_SECRET,{ expiresIn :"1d"} )
+    console.log(token)
 
-   // REGISTRO DE BASE DE DATOS
-     const newUser = new User({
-         name, 
-         email,
-         passwordHash,
-     });
+    //envio del correo para verificar con nodemailer
+    const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-     const savedUser = await newUser.save();
-    console.log(savedUser);
+//esto es con nodemailer para mandarle el correo de verificacion al usuario.
 
-   // TRABAJAR CON LOS  WEB TOKEN
-     const token = jwt.sign({ id: savedUser.id }, process.env.ACCESS_TOKEN_SECRET, {
-         expiresIn: '10m'
+(async () => {
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER, // sender address
+      to: savedUser.email, // list of receivers
+      subject: "Verificacion de Usuario GamerGames", // Subject line
+      html: `<a href="${PAGE_URL}/verify/${savedUser.id}/${token}"> Verificar Correo</a>`, // html body
     });
 
-    NODEMAILER
-     const transporter = nodemailer.createTransport({
-   host: "smtp.gmail.com",
-   port: 587,
-   secure: false, // true for 465, false for other ports
-   auth: {
-     user: process.env.EMAIL_USER,
-     pass: process.env.EMAIL_PASS,
-     },
- });
-  
- //Wrap in an async IIFE so we can use await.
- (async () => {
-   try {
-     const info = await transporter.sendMail({
-       from: process.env.EMAIL_USER, // sender address
-       to: savedUser.email, // list of receivers
-       subject: "Verificacion de usuario", // Subject line
-       html: `<a href="${PAGE_URL}/${token}">Verificar correo</a>`, // html body
- });
-
-    return res.status(201).json('Usuario creado. Por favor verifica tu correo')
-
-//     console.log("Message sent: %s", info.messageId);
-//     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-   } catch (err) {
-     console.error("Error while sending mail", err);
-   }
- })();
-
-});
-
-
-usersRouter.patch('/:token', async (req, res) => {
-  try{
- console.log(req.params.token);
- const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
- console.log(decodedToken);
- 
-  }catch(error){
-
-    
-    return res.status(401).json({ error: 'Token invalido o expirado' });
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  } catch (err) {
+    console.error("Error while sending mail", err);
   }
+})();
+
+
+return res.status(201).json( "Usuario creado. Por Favor verificar tu correo electronico ")
+
+
 });
+
+
+
+usersRouter.patch('/:id/:token', async (req, res) => {
+    try {
+        const token = req.params.token;
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const id = decodedToken.id;
+        await User.findByIdAndUpdate(id, { verified: true });
+        // importante para que no quede en bucle, confirmar con res y no usar el response
+        return res.sendStatus(200)
+    } catch (error) {
+        //Encontra el email del usuario
+        const id = req.params.id;
+        const { email } = await User.findById(id);
+        //Firmar el nuevo token
+        const token = jwt.sign({ id: id }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: '1d'
+        });
+        
+        //Enviar el email
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+            },
+        });   
+
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER, // sender address
+        to: email, // list of receivers
+        subject: "Verificación de usuario GamerGames", // Subject line
+        html: `<a href="${PAGE_URL}/verify/${id}/${token}">Verificar usuario</a>`, // html body
+    })
+
+        return res.status(400).json({ error: 'El link ya expiro. Se ha enviado un nuevo link de verificacion'})
+    }
+});
+
+
 
 module.exports = usersRouter;
-
-//colocar un pequeño string concatenando para saber de donde salio eso y no se pierda en la base de datos

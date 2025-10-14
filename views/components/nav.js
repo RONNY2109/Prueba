@@ -1,5 +1,4 @@
-const navbar = document.querySelector('#navbar');
-
+const navbar = document.querySelector("#navbar");
 const createNavHome = () => {
     navbar.innerHTML = `<div class="max-width-7xl h-16 mx-auto flex items-center px-4 justify-between">
                             <a href="/" class="font-bold text-sm text-white">TodoApp</a>
@@ -78,6 +77,8 @@ const createNavTodos = () => {
                         </div>`;
 };
 
+
+
 if(window.location.pathname === '/') {
     createNavHome();
 } else if (window.location.pathname === '/signup/') {
@@ -88,28 +89,30 @@ if(window.location.pathname === '/') {
     createNavTodos();
 }
 
-const navBtn = navbar.children[0].children[1];
 
-navBtn.addEventListener('click', e => {
-    const menuMobile = navbar.children[0].children[2];
+const navBtn = navbar.children[0].children[1]
+
+navBtn.addEventListener( "click", e =>{
     
-    if (!navBtn.classList.contains('active')) {
-        navBtn.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />`
-        navBtn.classList.add('active');
-        menuMobile.classList.remove('hidden');
-        menuMobile.classList.add('flex');
-    } else {
-        navBtn.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />`;
-        navBtn.classList.remove('active');
-        menuMobile.classList.add('hidden');
-        menuMobile.classList.remove('flex');
+    const menuMobile = navbar.children[0].children[3]
+    
+    if (!navBtn.classList.contains("active")) {
+        navBtn.classList.add("active")
+        navBtn.innerHTML= "<path stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12' />"
+        menuMobile.classList.remove("hidden")
+        menuMobile.classList.add("flex")
+    }else{
+        navBtn.classList.remove("active")
+        navBtn.innerHTML=  "<path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
+        menuMobile.classList.add("hidden")
+        menuMobile.classList.remove("flex")
     }
 })
 
-const closeBtnDescktop = navbar.children[0].children[3].children[0];
-const closeBtnMobile = navbar.children[0].children[2].children[0];
+const closeBtnDesktop = navbar.children[0].children[3].children[0]
+const closeBtnMobile = navbar.children[0].children[2].children[0]
 
-closeBtnDescktop.addEventListener('click', async e => {
+closeBtnDesktop.addEventListener('click', async e => {
     try {
         await axios.get('/api/logout');
         window.location.pathname = '/login';

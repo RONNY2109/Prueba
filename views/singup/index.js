@@ -9,6 +9,8 @@ const formBtn = document.querySelector("#form-btn");
 const notification = document.querySelector("#notification");
 console.log(axios);
 
+console.log("hola")
+
 const EMAIL_VALIDATION = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PASSWORD_VALIDATION =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
@@ -74,17 +76,18 @@ e.preventDefault();
         email: emailInput.value,
         password: passwordInput.value,
     };
-    // console.log(newUser);
-    
-    const { data } = await axios.post("/api/users", newUser);
-     createNotification(false, data);
-      setTimeout(() => {
-        notification.innerHTML = "";
-      }, 3000);
+    const {data} = await axios.post("/api/users", newUser);
+     createNotification(false,data);
+    setTimeout(() =>{
+      notification.innerHTML = " "
+    },3000)  
     } catch (error) {
-      createNotification(true, error.response.data.error);
-      setTimeout(() => {
-        notification.innerHTML = "";
-      }, 3000);
+      console.log( " chao", error)
+    createNotification(true, error.response.data.error);
+    setTimeout(() =>{
+      notification.innerHTML = " "
+    },3000)  
+      
+    createNotification(true, error.response.data.error);
     }
 });
