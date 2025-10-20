@@ -54,7 +54,7 @@ usersRouter.post('/', async (req, res) =>{
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER, // sender address
       to: savedUser.email, // list of receivers
-      subject: "Verificacion de Usuario GamerGames", // Subject line
+      subject: "Verificacion de Usuario", // Subject line
       html: `<a href="${PAGE_URL}/verify/${savedUser.id}/${token}"> Verificar Correo</a>`, // html body
     });
 
@@ -104,7 +104,7 @@ usersRouter.patch('/:id/:token', async (req, res) => {
     await transporter.sendMail({
         from: process.env.EMAIL_USER, // sender address
         to: email, // list of receivers
-        subject: "Verificación de usuario GamerGames", // Subject line
+        subject: "Verificación de usuario", // Subject line
         html: `<a href="${PAGE_URL}/verify/${id}/${token}">Verificar usuario</a>`, // html body
     })
 
