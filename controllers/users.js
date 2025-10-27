@@ -49,6 +49,9 @@ usersRouter.post('/', async (req, res) =>{
 
 //esto es con nodemailer para mandarle el correo de verificacion al usuario.
 
+
+// transport.sendMail es una promesa, por lo que usamos async y await para enviar el correo
+
 (async () => {
   try {
     const info = await transporter.sendMail({
@@ -71,7 +74,8 @@ return res.status(201).json( "Usuario creado. Por Favor verificar tu correo elec
 
 });
 
-
+//jwt json web token
+//endpoint para verificar el usuario
 
 usersRouter.patch('/:id/:token', async (req, res) => {
     try {

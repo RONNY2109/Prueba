@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+// error (401 Unauthorized) si no hay token
+// error (403 Forbidden) si el token no es valido
+
 const userExtractor = async (request, response, next) => {
     try {
         const token = request.cookies?.accessToken;

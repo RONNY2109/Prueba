@@ -3,6 +3,8 @@ const passwordInput = document.querySelector("#password-input")
 const form = document.querySelector("#form")
 const errorText = document.querySelector("#error-text")
 
+//tiempo de ejecucion asincrono
+
 form.addEventListener("submit",async  e =>{
     // el e.preventdefault() sirve para que no se recargue la pagina
     e.preventDefault()

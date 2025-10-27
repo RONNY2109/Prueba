@@ -12,10 +12,8 @@ console.log(axios);
 console.log("hola")
 
 const EMAIL_VALIDATION = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const PASSWORD_VALIDATION =
-  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-const NAME_VALIDATION =
-  /^[A-Z\u00d1][a-zA-Z-Ÿí\u00f1\u00d1]+(\s*[A-Z\u00d1][a-zA-Z-Ÿí\u00f1\u00d1]*)$/;
+const PASSWORD_VALIDATION =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+const NAME_VALIDATION =/^[A-Z\u00d1][a-zA-Z-Ÿí\u00f1\u00d1]+(\s*[A-Z\u00d1][a-zA-Z-Ÿí\u00f1\u00d1]*)$/;
 
 let nameValidation = false;
 let emailValidation = false;
@@ -91,3 +89,9 @@ e.preventDefault();
     createNotification(true, error.response.data.error);
     }
 });
+
+//axios es una libreria para hacer peticiones http desde el frontend o backend
+//axios.post(url, data) para hacer una peticion post
+//axios.get(url) para hacer una peticion get
+//axios.patch(url, data) para hacer una peticion patch
+//axios.delete(url) para hacer una peticion delete

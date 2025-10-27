@@ -11,16 +11,24 @@ todosRouter.get('/', async (request, response) => {
 
 todosRouter.post('/', async (request, response) => {
     const user = request.user;
+    //obj {object} = 
+    //desestructuracion {text} = obj
     const { text } = request.body;
+    //definir nueva tarea
     const newTodo = new Todo({
         text,
         checked: false,
+        //id del usuario que crea la tarea
         user: user._id
     });
-
+    //.save mongoose method to save the new todo to the database
     const savedTodo = await newTodo.save();
+    //concatena el id de la nueva tarea al array de tareas del usuario
     user.todos = user.todos.concat(savedTodo._id);
+    //
+    
     await user.save();
+   
     
     return response.status(200).json(savedTodo);
 })

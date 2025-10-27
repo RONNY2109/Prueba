@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 
+// estructura de la coleccion de usuarios nombre, email, passwordHash, verified
+
+//__v es una "version key" o (llave de version) que mongoose usa internamente para rastrear las revisiones de documentos en una coleccion
+
 //CON EL SCHEMA DEFINIMOS LA ESTRUCTURA DE LA COLECCION DE LOS USUARIOS Y EL TIPO DE DATO
 const userSchema = new mongoose.Schema({
     name: String,

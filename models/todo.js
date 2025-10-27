@@ -14,6 +14,8 @@ const todoSchema = new mongoose.Schema({
 
 //MONGO DB CREA UN ID POR DEFAULT _ID
 
+//set la forma en que se va a mostrar el objeto cuando se convierta a JSON
+
 todoSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString();

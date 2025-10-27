@@ -54,3 +54,38 @@ app.use('/api/todos', userExtractor, todosRouter);
 
 
 module.exports = app;
+
+//MVC Model View Controller (Modelo-Vista-Controlador)
+
+//El patrón divide la aplicación en tres capas o partes, cada una con una responsabilidad bien definida:
+
+// 1. Modelo (Model)
+// Responsabilidad: Gestionar los datos, la lógica de negocio y las reglas de la aplicación.
+
+// Función: Se encarga de la comunicación con la base de datos (guardar, consultar, actualizar datos), realizar cálculos, validaciones y cualquier otra lógica central de la aplicación.
+
+// No depende de: La interfaz de usuario (Vista) o la forma en que se interactúa con ella (Controlador).
+
+// En resumen: Qué son los datos y Qué se puede hacer con ellos.
+
+// 2. Vista (View)
+// Responsabilidad: Presentar los datos al usuario y capturar la interacción del usuario.
+
+// Función: Es la interfaz de usuario (UI). En aplicaciones web, suele ser el código HTML, CSS y JavaScript. Su única función es mostrar la información que le proporciona el Modelo (generalmente a través del Controlador).
+
+// No contiene: Lógica de negocio.
+
+// En resumen: Cómo se ven los datos.
+
+// 3. Controlador (Controller)
+// Responsabilidad: Actuar como intermediario entre el Modelo y la Vista.
+
+// Función: Recibe las peticiones del usuario (entrada), determina qué Modelos deben ser utilizados para procesar la información, llama a la lógica de negocio y, finalmente, selecciona la Vista apropiada para mostrar el resultado al usuario.
+
+// En resumen: Qué hacer con la entrada del usuario y Qué mostrar como respuesta.
+
+// resumen 
+
+// Modelo: Gestiona los datos y la lógica de negocio.
+// Vista: Presenta los datos al usuario.
+// Controlador: Maneja la interacción entre el Modelo y la Vista.
